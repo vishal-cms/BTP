@@ -1,0 +1,82 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    tools:context="com.example.vishal_mokal.btp.Activities.Fragments.LoginFragment">
+
+    <ImageView
+        android:id="@+id/img_mainBanaer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dip"
+        android:src="@drawable/btp"
+
+        />
+
+
+    <ScrollView
+        android:id="@+id/loginPanel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/img_mainBanaer"
+
+        android:layout_marginTop="10dip"
+        android:padding="10dip">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/txtLoginUserName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dip"
+
+                android:layout_marginRight="5dip"
+                android:gravity="center"
+                android:hint="User Name"
+                android:padding="10dip"
+                android:textColorLink="@color/primarycolor" />
+
+            <EditText
+                android:id="@+id/txtLoginPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dip"
+
+                android:layout_marginRight="5dip"
+                android:gravity="center"
+                android:hint="Password"
+                android:padding="10dip"
+                android:textColorLink="@color/primarycolor" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dip"
+                android:background="@color/buttoncolor"
+                android:text="Login"
+                android:textColor="#ffffff" />
+        </LinearLayout>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/btn_newUser"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/loginPanel"
+        android:gravity="center"
+        android:padding="5dip"
+        android:text="New User" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center|left"
+        android:padding="3dip"
+        android:text="V 1.0.1" />
+</RelativeLayout>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <style name="AppTheme" parent="AppTheme.BaseTheme">
+
+        <item name="android:colorControlActivated">@color/accent</item>
+        <item name="android:colorPrimary">@color/primarycolor</item>
+    </style>
+</resources>
