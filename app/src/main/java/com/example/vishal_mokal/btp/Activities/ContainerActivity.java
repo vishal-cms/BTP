@@ -8,6 +8,7 @@ import android.view.Menu;
 
 import com.example.vishal_mokal.btp.Activities.FragmentCommunicator.FragmentCommunicator;
 import com.example.vishal_mokal.btp.Activities.Fragments.DatePickerFragment;
+import com.example.vishal_mokal.btp.Activities.Fragments.GetTrafficVoilationFragment;
 import com.example.vishal_mokal.btp.Activities.Fragments.LoginFragment;
 import com.example.vishal_mokal.btp.Activities.Fragments.UserRegistrationFragment;
 import com.example.vishal_mokal.btp.R;
@@ -67,4 +68,13 @@ FragmentManager manager;
         DatePickerFragment datePickerFragment = new DatePickerFragment("mdy");
         datePickerFragment.show(manager  , "dateFragment");
     }
+
+    @Override
+    public void launchGetVoilationFragment() {
+        GetTrafficVoilationFragment getTrafficVoilationFragment = new GetTrafficVoilationFragment();
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.replace(R.id.containerlayout , getTrafficVoilationFragment , "TrafficVoilationFragment");
+        transaction.commit();
+    }
+    
 }

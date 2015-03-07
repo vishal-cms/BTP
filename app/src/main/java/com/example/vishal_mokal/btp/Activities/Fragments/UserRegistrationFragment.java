@@ -97,11 +97,12 @@ public class UserRegistrationFragment extends android.support.v4.app.Fragment im
                    if(new GeneralUtilities().validateUserName(txtEmailAddress.getText().toString().trim())) {
                        
                        if(txtPassword.getText().toString().trim().equals(txtReEnterPassword.getText().toString().trim())) {
-                            
-                           RequestDetails requestDetails = new RequestDetails(Constants.USER_REGISTRATION_AUTHENTICATION_USERNAME , 
-                                   Constants.USER_REGISTRATION_URL , 
-                                   Constants.USER_REGISTRATION_NAMESPACE , 
-                                   Constants.USER_REGISTRATION_SOAP_ACTION);
+                            /*String nameSpace, String url, String methodName, String soapAction*/
+                           RequestDetails requestDetails = new RequestDetails(Constants.USER_REGISTRATION_NAMESPACE ,
+                                   Constants.USER_REGISTRATION_URL,
+                                   Constants.USER_REGISTRATION_METHOD_NAME,
+                                   Constants.USER_REGISTRATION_SOAP_ACTION
+                                   );
                            SoapObject registrationDetails = new SoapObject(Constants.USER_REGISTRATION_NAMESPACE , Constants.USER_REGISTRATION_METHOD_NAME);
                            registrationDetails.addProperty("name", txtName.getText().toString());
                            registrationDetails.addProperty("email", txtEmailAddress.getText().toString());
@@ -160,7 +161,7 @@ public class UserRegistrationFragment extends android.support.v4.app.Fragment im
     class RegistrationClass extends AsyncTask<String , String , String>
     {
         RequestDetails requestDetails;
-        boolean result;
+        String[] result;
 
         RegistrationClass(RequestDetails requestDetails) {
             this.requestDetails = requestDetails;
@@ -189,16 +190,18 @@ public class UserRegistrationFragment extends android.support.v4.app.Fragment im
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            progressDialog.dismiss();
-            if(result = false)
-            {
-                Toast.makeText(getActivity(), "Registration Failed" , Toast.LENGTH_LONG).show();
-            }
+            if (progressDialog != null){
+            progressDialog.dismiss();}
             
-            else    
+            if (result[0].equals("1"))
             {
-                Toast.makeText(getActivity(), "Registration Successful" , Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity() , "Registration Successful" , Toast.LENGTH_LONG).show();
             }
+            else if(result[0].equals("0"))
+            {
+                Toast.makeText(getActivity() , result[1] , Toast.LENGTH_LONG).show();
+            }
+           
         }
     }
     

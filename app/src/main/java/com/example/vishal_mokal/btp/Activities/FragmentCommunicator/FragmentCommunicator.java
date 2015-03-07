@@ -8,6 +8,7 @@ public interface FragmentCommunicator {
     public void launchUserRegistrationFragment();
     public void setDate(String date);
     public void launchDatepickerFramgnet();
+    public void launchGetVoilationFragment();
     
 
 }
