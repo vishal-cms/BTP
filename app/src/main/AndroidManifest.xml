@@ -2,13 +2,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.vishal_mokal.btp" >
 <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+ <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/logo"
         android:label="@string/app_name"
+        
         android:theme="@style/AppTheme.BaseTheme" >
         <activity
             android:name=".Activities.ContainerActivity"
+            android:configChanges="orientation|keyboardHidden|fontScale"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

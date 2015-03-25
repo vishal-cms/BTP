@@ -7,6 +7,6 @@
     <color name="accent">#81d4fa</color>
     <color name="textBoxBackground">#ffffff</color>
     <color name="textBoxBorder">#b3e5fc</color>
-    <color name="BackGroundColor">#ffffff</color>
+    <color name="BackGroundColor">#F1F1F1</color>
 
 </resources>

@@ -1,27 +1,44 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#ffffff"
+    android:layout_height="wrap_content"
+    android:background="#FFFFFF"
+    android:gravity="center"
+    android:scrollbars="horizontal|vertical"
     tools:context="com.example.vishal_mokal.btp.Activities.Fragments.LoginFragment">
 
     <ImageView
         android:id="@+id/img_mainBanaer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dip"
+        android:layout_marginLeft="5dip"
+        android:layout_marginRight="5dip"
+        android:layout_marginTop="25dip"
+        android:layout_marginBottom="15dip"
+        
         android:src="@drawable/btp"
 
         />
-
+    <TextView
+            android:id="@+id/txtErrorMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/img_mainBanaer"
+            android:textColor="#CC0000"
+        android:layout_marginTop="5dip"
+        android:layout_marginBottom="5dip"
+            android:gravity="center"
+            android:padding="5dip"
+  
+            android:text="" />
 
     <ScrollView
         android:id="@+id/loginPanel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/img_mainBanaer"
-
-        android:layout_marginTop="10dip"
+            
+        android:layout_marginTop="20dip"
         android:padding="10dip">
 
         <LinearLayout
@@ -34,7 +51,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dip"
-
+                android:inputType="textEmailAddress"
                 android:layout_marginRight="5dip"
                 android:gravity="center"
                 android:hint="User Name"
@@ -46,32 +63,79 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dip"
-
+                android:inputType="textPassword"
                 android:layout_marginRight="5dip"
                 android:gravity="center"
                 android:hint="Password"
                 android:padding="10dip"
                 android:textColorLink="@color/primarycolor" />
 
-            <Button
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dip"
-                android:background="@color/buttoncolor"
-                android:id="@+id/btnLogin"
-                android:text="Login"
-                android:textColor="#ffffff" />
+                android:id="@+id/searchPanel"
+                android:layout_marginTop="5dip"
+                android:layout_marginLeft="5dip"
+                android:gravity="center"
+                android:layout_marginRight="5dip"
+               >
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/buttoncolor"
+                    android:id="@+id/btn_newUser"
+                    android:text="Sign Up"
+                    android:layout_marginRight="10dip"
+                    android:paddingLeft="40dip"
+                    android:paddingRight="40dip"
+                    android:textColor="#ffffff" />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:elevation="2dp"
+                    android:layout_weight="1"
+                    android:background="@color/buttoncolor"
+                    android:id="@+id/btnLogin"
+                    android:paddingLeft="40dip"
+                    android:paddingRight="40dip"
+                    android:text=" Login "
+                    android:textColor="#ffffff" />
+            </LinearLayout>
+            <RelativeLayout
+                android:id="@+id/userModulPanel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                
+                android:layout_marginTop="5dip">
+
+                <TextView
+                    android:id="@+id/btn_ChangePassword"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:clickable="true"
+                    android:padding="5dip"
+                    android:text="Change Password" />
+
+                <TextView
+                    android:id="@+id/btn_ForgotPassword"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:clickable="true"
+                    android:padding="5dip"
+                    android:text="Forgot Password" />
+
+                
+
+            </RelativeLayout>
+           
         </LinearLayout>
     </ScrollView>
 
-    <TextView
-        android:id="@+id/btn_newUser"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/loginPanel"
-        android:gravity="center"
-        android:padding="5dip"
-        android:text="New User" />
 
     <TextView
         android:layout_width="match_parent"

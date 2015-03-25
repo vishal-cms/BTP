@@ -39,7 +39,7 @@ public class Connection {
     * first element status = 1 if syccessfull 0 = if any exception of faliur 
     * second element = response srtring if successful or error message.
     * */
-    public String[] soapCALL(RequestDetails requestDetails, String wsdlUserName, String wsdlPassword) {
+    public String[] soapCALL(RequestDetails requestDetails, String wsdlUserName, String wsdlPassword , String headerName) {
         
         String url = requestDetails.getUrl().toString();
         String nameSpace = requestDetails.getNameSpace().toString();
@@ -50,7 +50,8 @@ public class Connection {
         
         Element[] header = new Element[1];
         
-        header[0] = new Element().createElement(nameSpace, "AuthenticationHeader");
+       // header[0] = new Element().createElement(nameSpace, "AuthenticationHeader");
+        header[0] = new Element().createElement(nameSpace, headerName);
 
         try {
             Element UserName = new Element().createElement(nameSpace, "UserName");
@@ -61,14 +62,14 @@ public class Connection {
             header[0].addChild(Node.ELEMENT, Password);
             SoapObject request = requestDetails.getSoapObject();
 
-            SoapSerializationEnvelope sopaSerilizationEnvelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
-            sopaSerilizationEnvelope.dotNet = true;
-            sopaSerilizationEnvelope.headerOut = header;
-            sopaSerilizationEnvelope.setOutputSoapObject(request);
-
+            SoapSerializationEnvelope soapSerilizationEnvelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+            soapSerilizationEnvelope.dotNet = true;
+            soapSerilizationEnvelope.headerOut = header;
+            soapSerilizationEnvelope.setOutputSoapObject(request);
+            Object env = soapSerilizationEnvelope.bodyOut;
             HttpTransportSE httptransport = new HttpTransportSE(url);
-            httptransport.call(soapAction, sopaSerilizationEnvelope);
-            SoapPrimitive response = (SoapPrimitive) sopaSerilizationEnvelope.getResponse();
+            httptransport.call(soapAction, soapSerilizationEnvelope);
+            SoapPrimitive response = (SoapPrimitive) soapSerilizationEnvelope.getResponse();
             
             responses[0] = "1";
             responses[1] = response.toString();
@@ -115,9 +116,9 @@ public class Connection {
     * Download bottleneck information 
     * */
 
-    public String getResult(String requestdUrl) {
+    public String[] getResult(String requestdUrl) {
         InputStream inputStream = null;
-        String result = null;
+        String result[] = new String[2];
         try {
 
             HttpParams httpParams = new BasicHttpParams();
@@ -126,14 +127,17 @@ public class Connection {
             HttpClient httpClient = new DefaultHttpClient(httpParams);
             HttpResponse httpResponse = httpClient.execute(new HttpGet(requestdUrl));
             inputStream = httpResponse.getEntity().getContent();
-            if (inputStream != null)
-                result = convertInputStreamToString(inputStream);
-            else
-                result = "False";
+            if (inputStream != null){
+                result[0] = "1";
+                result[1] = convertInputStreamToString(inputStream);}
+            else{
+            result[0] = "0";
+            result[1] = "No Data Found";}
             return result;
         } catch (Exception e) {
-
-            return "False";
+            result[0] = "0";
+            result[1] = "Sorry!Problem Connecting Server Please Try After Some Time.";
+            return result;
         }
 
 

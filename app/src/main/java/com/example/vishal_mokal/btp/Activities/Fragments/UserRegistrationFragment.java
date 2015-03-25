@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.vishal_mokal.btp.Activities.Connections.Connection;
 import com.example.vishal_mokal.btp.Activities.Connections.RequestDetails;
+import com.example.vishal_mokal.btp.Activities.Connections.ResultParser;
 import com.example.vishal_mokal.btp.Activities.FragmentCommunicator.FragmentCommunicator;
 import com.example.vishal_mokal.btp.Activities.utils.Constants;
 import com.example.vishal_mokal.btp.Activities.utils.GeneralUtilities;
@@ -94,42 +95,61 @@ public class UserRegistrationFragment extends android.support.v4.app.Fragment im
                        !txtPhoneNumber.getText().toString().trim().equalsIgnoreCase("")&&
                        !txtPassword.getText().toString().trim().equalsIgnoreCase("")) {
 
-                   if(new GeneralUtilities().validateUserName(txtEmailAddress.getText().toString().trim())) {
-                       
-                       if(txtPassword.getText().toString().trim().equals(txtReEnterPassword.getText().toString().trim())) {
-                            /*String nameSpace, String url, String methodName, String soapAction*/
-                           RequestDetails requestDetails = new RequestDetails(Constants.USER_REGISTRATION_NAMESPACE ,
-                                   Constants.USER_REGISTRATION_URL,
-                                   Constants.USER_REGISTRATION_METHOD_NAME,
-                                   Constants.USER_REGISTRATION_SOAP_ACTION
-                                   );
-                           SoapObject registrationDetails = new SoapObject(Constants.USER_REGISTRATION_NAMESPACE , Constants.USER_REGISTRATION_METHOD_NAME);
-                           registrationDetails.addProperty("name", txtName.getText().toString());
-                           registrationDetails.addProperty("email", txtEmailAddress.getText().toString());
-                           registrationDetails.addProperty("address", txtAddress.getText().toString());
-                           registrationDetails.addProperty("sex", sex);
-                           registrationDetails.addProperty("Dob", txtSelectDate.getText().toString());
-                           registrationDetails.addProperty("password", txtPassword.getText().toString());
-                          
-                           requestDetails.setSoapObject(registrationDetails);
+                   if(GeneralUtilities.validateUserName(txtName.getText().toString().trim())) {
 
-                           new RegistrationClass(requestDetails).execute();
-                                   
-            
-                          
-                       }
-                       else
+                       if (GeneralUtilities.validateEmailAddress(txtEmailAddress.getText().toString().trim())) {
+
+
+                           if (GeneralUtilities.validatePhoneNumber(txtPhoneNumber.getText().toString()))
+
+                           {
+
+                               if (txtPassword.getText().toString().trim().equals(txtReEnterPassword.getText().toString().trim())) {
+                            /*String nameSpace, String url, String methodName, String soapAction*/
+                                   RequestDetails requestDetails = new RequestDetails(Constants.USER_REGISTRATION_NAMESPACE,
+                                           Constants.USER_REGISTRATION_URL,
+                                           Constants.USER_REGISTRATION_METHOD_NAME,
+                                           Constants.USER_REGISTRATION_SOAP_ACTION
+                                   );
+                                   SoapObject registrationDetails = new SoapObject(Constants.USER_REGISTRATION_NAMESPACE, Constants.USER_REGISTRATION_METHOD_NAME);
+                                   registrationDetails.addProperty("name", txtName.getText().toString());
+                                   registrationDetails.addProperty("email", txtEmailAddress.getText().toString());
+                                   registrationDetails.addProperty("mobile", txtPhoneNumber.getText().toString());
+                                   registrationDetails.addProperty("address", txtAddress.getText().toString());
+                                   registrationDetails.addProperty("gender", sex);
+                                   registrationDetails.addProperty("dob", txtSelectDate.getText().toString());
+                                   registrationDetails.addProperty("password", txtPassword.getText().toString());
+
+                                   requestDetails.setSoapObject(registrationDetails);
+
+                                   new RegistrationClass(requestDetails).execute();
+
+
+                               } else {
+                                   txtPassword.setError("Password And Re-Entered Password Dose Not Match.");
+                                   txtPassword.setText("");
+                                   txtReEnterPassword.setText("");
+                                   txtPassword.requestFocus();
+                               }
+                           } else {
+                               txtPhoneNumber.setError("Please Enter Correct Phone Number");
+                               txtPhoneNumber.requestFocus();
+                           }
+
+                       } else
+
                        {
-                           
+                           txtEmailAddress.setText("");
+                           txtEmailAddress.setError("Please Enter Correct Email Address.");
+                           txtEmailAddress.requestFocus();
                        }
-                       
                    }
                    else
-                       
                    {
-                       Toast.makeText(getActivity(), "Please Enter Correct Email Address" , Toast.LENGTH_LONG).show();
+                       txtName.setError("Please Enter Correct Name");
+                       txtName.requestFocus();
+                               
                    }
-                   
                    
                }
                else {
@@ -162,6 +182,7 @@ public class UserRegistrationFragment extends android.support.v4.app.Fragment im
     {
         RequestDetails requestDetails;
         String[] result;
+        String[] parseResult;
 
         RegistrationClass(RequestDetails requestDetails) {
             this.requestDetails = requestDetails;
@@ -171,8 +192,12 @@ public class UserRegistrationFragment extends android.support.v4.app.Fragment im
         @Override
         protected String doInBackground(String... params) {
             
-         result =  new Connection().soapCALL(requestDetails , Constants.USER_REGISTRATION_AUTHENTICATION_USERNAME ,Constants.USER_REGISTRATION_AUTHENTICATION_password);
+         result =  new Connection().soapCALL(requestDetails , Constants.USER_REGISTRATION_AUTHENTICATION_USERNAME ,Constants.USER_REGISTRATION_AUTHENTICATION_PASSWORD, "AuthenticationHeaders");
             
+            if (result[0].equals("1"))
+            {
+                
+            }
             
             return null;
         }
@@ -182,6 +207,7 @@ public class UserRegistrationFragment extends android.support.v4.app.Fragment im
             super.onPreExecute();
             progressDialog = new ProgressDialog(getActivity());
             progressDialog.setMessage("Please Wait");
+            progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.show();
             
           
@@ -195,7 +221,19 @@ public class UserRegistrationFragment extends android.support.v4.app.Fragment im
             
             if (result[0].equals("1"))
             {
-                Toast.makeText(getActivity() , "Registration Successful" , Toast.LENGTH_LONG).show();
+                parseResult = new ResultParser(result[1].toString()).parseResults();
+                
+                if(parseResult[1].equals("1"))
+                {
+                    new GeneralUtilities(getActivity()).writeDataToSharedPreferences(parseResult[0].toString());
+                    Toast.makeText(getActivity() , "Thank You ! Registration Successful." , Toast.LENGTH_LONG).show();
+                    communicator.launchGetBottleNeckFragment();
+                }
+                else if (parseResult[1].equals("0"))
+                {
+                    Toast.makeText(getActivity() , "Sorry! " +parseResult[2].toString() , Toast.LENGTH_LONG).show();
+                }
+                
             }
             else if(result[0].equals("0"))
             {
@@ -209,12 +247,23 @@ public class UserRegistrationFragment extends android.support.v4.app.Fragment im
     
     public void setDate(String date)
     {
-        txtSelectDate.setText(date);
+        if(date.equalsIgnoreCase("false"))
+        {
+         Toast.makeText(getActivity() , "Please Enter Correct Date" , Toast.LENGTH_LONG).show();   
+        }
+        else {
+            txtSelectDate.setText(date);
+        }
+        }
+
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        communicator.changeActionBarTitle("User Registration.");
+        communicator.showActionBar();
     }
-    
-    
-    
-    
     
     
     

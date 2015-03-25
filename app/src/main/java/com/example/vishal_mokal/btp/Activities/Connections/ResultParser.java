@@ -3,11 +3,15 @@ package com.example.vishal_mokal.btp.Activities.Connections;
 import android.util.Log;
 
 import com.example.vishal_mokal.btp.Activities.FragmentCommunicator.Controller;
+import com.example.vishal_mokal.btp.Activities.ObjectHolders.BottleNeck;
 import com.example.vishal_mokal.btp.Activities.ObjectHolders.Voilation;
 import com.example.vishal_mokal.btp.Activities.ObjectHolders.Voilations;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.io.ByteArrayInputStream;
@@ -99,7 +103,7 @@ public class ResultParser {
                         }
                        
                     }
-                    voilationList.add(voilation);
+                    voilationList.add(0 ,voilation);
                 }
                 voilations.setVoilationDetails(voilationList);
                 controller.setVoilations(voilations);
@@ -114,7 +118,146 @@ public class ResultParser {
             return false;
         }
     }
+
+
+    public boolean parseBottleneckData() {
+        String status;
+        try {
+            BottleNeck bottleNeck;
+            ArrayList<BottleNeck> bottleNeckArrayList = new ArrayList<BottleNeck>();
+            Log.d("resylt", resultString);
+            factory = DocumentBuilderFactory.newInstance();
+            documentBuilder = factory.newDocumentBuilder();
+            Document document = documentBuilder.parse(inputStream);
+            Element rootElemtnt = document.getDocumentElement();
+            NodeList resultItemList = rootElemtnt.getChildNodes();
+            
+            int size = resultItemList.getLength();
+            
+           
+            
+            
+            JSONObject bottleneckobject = new JSONObject();
+            JSONArray bottleneckjsonlist = new JSONArray();
+            
+            for(int i = 0 ; i<size ; i++)
+            {
+             Node resultItemElement = resultItemList.item(i);
+                if(resultItemElement.getNodeName().equalsIgnoreCase("channel"))
+                {
+                    NodeList itemList = resultItemElement.getChildNodes();
+                   
+                    for(int j = 0 ;j < itemList.getLength() ; j++)
+                    {
+                        if(itemList.item(j).getNodeName().equalsIgnoreCase("item"))
+                        {
+                            NodeList bottlenecklist = itemList.item(j).getChildNodes();
+                            bottleNeck = new BottleNeck();
+                            JSONObject bottleneckjson = new JSONObject();
+                            for(int k = 0 ; k < bottlenecklist.getLength() ; k++)
+                            {
+                               if( bottlenecklist.item(k).getNodeName().equalsIgnoreCase("description"))
+                               {
+                                  Log.d("BottleNeck" , bottlenecklist.item(k).getTextContent());
+                                   bottleNeck.setDescription( bottlenecklist.item(k).getTextContent());
+                                   bottleneckjson.put("Description" , bottlenecklist.item(k).getTextContent());
+                                  
+                               }
+                                else  if( bottlenecklist.item(k).getNodeName().equalsIgnoreCase("pubDate"))
+                               {
+                                   Log.d("BottleNeck" , bottlenecklist.item(k).getTextContent());
+                                   bottleNeck.setDate(bottlenecklist.item(k).getTextContent());
+                                   bottleneckjson.put("Date" , bottlenecklist.item(k).getTextContent());
+                                   
+                               }
+                            }
+                            bottleNeckArrayList.add(bottleNeck);
+                            bottleneckjsonlist.put(0 , bottleneckjson);
+                        }
+                        
+                    }
+                }
+            }
+            bottleneckobject.put("BottleNeck" , bottleneckjsonlist);
+            controller.setBottleNeckList(bottleNeckArrayList);
+            
+            Log.d("Json" , bottleneckobject.toString());
+            
+            
+            
+            
+            
+            return true;
+        } catch (Exception e) {
+            Log.d("Error", "Parsing Error");
+            return false;
+        }
+
+    }
+    
+    
+    public boolean parseExsistingBottleNeckListforcurrentDate(String Data)
+    {
+      
+        try {
+
+            JSONObject jsonObject = new JSONObject(Data);
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+        
+    }
+
+
+
+    public String[] parseResults() {
+        String[] parseresults = new String[4];
+       
+        try {
+           
+            Log.d("resylt", resultString);
+            factory = DocumentBuilderFactory.newInstance();
+            documentBuilder = factory.newDocumentBuilder();
+            Document document = documentBuilder.parse(inputStream);
+            Element rootElemtnt = document.getDocumentElement();
+            NodeList resultItemList = rootElemtnt.getChildNodes();
+            int size = resultItemList.getLength();
+            
+            for(int i = 0 ; i < resultItemList.getLength() ; i++)
+            {
+               Node resultItem = resultItemList.item(i);
+                if(resultItem.getNodeName().equalsIgnoreCase("USERNAME"))
+                {
+                   parseresults[0] = resultItem.getTextContent().toString();
+                }
+                else if(resultItem.getNodeName().equalsIgnoreCase("STATUS"))
+                {
+                    parseresults[1] = resultItem.getTextContent().toString();
+                }
+                else if(resultItem.getNodeName().equalsIgnoreCase("USERMESSAGE"))
+                {
+                    parseresults[2] = resultItem.getTextContent().toString();
+                }else if(resultItem.getNodeName().equalsIgnoreCase("PASSWORD"))
+                {
+                    parseresults[3] = resultItem.getTextContent().toString();
+                }
+            }
+
+            return parseresults;
+        } catch (Exception e) {
+            parseresults[1] = "0";
+            parseresults[0] = "null";
+            parseresults[2] = "Parsing Error";
+            return parseresults;
+        }
+
+    }
     
     
     
+
 }

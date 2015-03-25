@@ -1,6 +1,5 @@
 package com.example.vishal_mokal.btp.Activities.Fragments;
 
-
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
@@ -8,9 +7,15 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.DatePicker;
 
+import com.example.vishal_mokal.btp.Activities.FragmentCommunicator.Controller;
 import com.example.vishal_mokal.btp.Activities.FragmentCommunicator.FragmentCommunicator;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+
+
 
 /**
  * A simple {@link android.app.Fragment} subclass.
@@ -19,10 +24,10 @@ import java.util.Calendar;
 public class DatePickerFragment extends android.support.v4.app.DialogFragment implements DatePickerDialog.OnDateSetListener {
 
     FragmentCommunicator communicator;
-    
+    Controller controller;
     String dateFormat;
 
-    
+
     //if dateformat = dmy onDateSet method will return date in DD/MM/YYYY format
     //if dateformat = mdy onDateSet method will return date in MM/DD/YYYY format
 
@@ -30,9 +35,8 @@ public class DatePickerFragment extends android.support.v4.app.DialogFragment im
     }
 
     public DatePickerFragment(String dateFormat) {
-       
+   
         this.dateFormat = dateFormat;
-        
 
     }
 
@@ -62,15 +66,21 @@ public class DatePickerFragment extends android.support.v4.app.DialogFragment im
             day = "0" + dayOfMonth;
         }
         String date = null;
-        
-        if(dateFormat.equals("dmy")) {
-            date = "" + day.trim() + "/" + month.trim() + "/" + year;
-        }
-        else if(dateFormat.equals("mdy")) {
-            date = "" +month.trim() + "/" +  day.trim() + "/" + year;
-        }
-       communicator.setDate(date);
 
+        if (dateFormat.equals("dmy")) {
+            date = "" + day.trim() + "/" + month.trim() + "/" + year;
+
+
+        } else if (dateFormat.equals("mdy")) {
+            date = "" + month.trim() + "/" + day.trim() + "/" + year;
+        }
+
+
+        if (validateDate(date, dateFormat)) {
+           communicator.setDate(date);
+        } else {
+            communicator.setDate("false");
+        }
 
     }
 
@@ -79,6 +89,37 @@ public class DatePickerFragment extends android.support.v4.app.DialogFragment im
         super.onDetach();
         Log.d("Detach", "Detached");
        
+
+    }
+
+
+    private boolean validateDate(String date, String format) {
+
+        DateFormat dateformat = null;
+        try {
+            if (format.equals("mdy")) {
+                dateformat = new SimpleDateFormat("MM/dd/yyyy");
+            } else if (format.equals("dmy")) {
+
+                dateformat = new SimpleDateFormat("dd/MM/yyyy");
+            }
+
+            Date selectedDate = dateformat.parse(date);
+
+            Date currentDate = new Date();
+
+            if (selectedDate.after(currentDate)) {
+                return false;
+            } else {
+                return true;
+            }
+
+
+        } catch (Exception e) {
+            Log.d("Date Exception", e.toString());
+            return false;
+        }
+
 
     }
 }
